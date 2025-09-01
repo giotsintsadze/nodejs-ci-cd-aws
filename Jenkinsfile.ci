@@ -18,7 +18,6 @@ pipeline {
     stage('Lint Code') {
         steps {
             dir('app') {
-                sh 'npm init @eslint/config@latest'
                 sh 'npx eslint server.js'
             }
         }
