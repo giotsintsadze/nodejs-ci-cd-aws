@@ -5,18 +5,20 @@ pipeline {
         TF_WORKDIR = './terraform'
     }
 
-    stage('Terraform Destroy') {
-        steps {
-            dir("${TF_WORKDIR}") {
-                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
-                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
-                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform destroy -auto-approve'
+    stages {
+        stage('Terraform Destroy') {
+            steps {
+                dir("${TF_WORKDIR}") {
+                    withCredentials([usernamePassword(credentialsId: 'aws-terraform',
+                                                     usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                     passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'terraform destroy -auto-approve'
+                    }
                 }
-              }
             }
         }
     }
+
     post {
         success {
             echo '✅ Pipeline completed successfully!'
