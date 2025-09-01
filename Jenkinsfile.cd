@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_WORKDIR = './terraform'
+    }
+
+    stages {
+        stage('Terraform Init') {
+            steps {
+            dir("${TF_WORKDIR}") {
+                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform init'
+                }
+              }
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                dir("${TF_WORKDIR}") {
+                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+
+                    sh 'terraform plan -out=tfplan'
+                }
+              }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "deploy stage"
+            }
+        }
+    }
+    post {
+        success {
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed.'
+        }
+    }
+}

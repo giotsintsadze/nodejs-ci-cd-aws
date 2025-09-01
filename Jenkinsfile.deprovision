@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_WORKDIR = './terraform'
+    }
+
+    stages {
+        stage('Terraform Init') {
+            steps {
+            dir("${TF_WORKDIR}") {
+                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform destroy -auto-approve'
+                }
+              }
+            }
+        }
+    }
+    post {
+        success {
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed.'
+        }
+    }
+}
