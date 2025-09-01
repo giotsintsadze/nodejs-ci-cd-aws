@@ -5,9 +5,8 @@ pipeline {
         TF_WORKDIR = './terraform'
     }
 
-    stages {
-        stage('Terraform Init') {
-            steps {
+    stage('Terraform Destroy') {
+        steps {
             dir("${TF_WORKDIR}") {
                 withCredentials([usernamePassword(credentialsId: 'aws-terraform',
                                                 usernameVariable: 'AWS_ACCESS_KEY_ID',
