@@ -1,10 +1,6 @@
 terraform {
   required_version = ">= 1.3.0"
 
-  backend "local" {
-    path = "/home/giorgi/projects/nodejs-ci-cd-aws/terraform/terraform.tfstate"
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
