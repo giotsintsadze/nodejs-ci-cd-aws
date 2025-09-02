@@ -2,28 +2,18 @@ pipeline {
     agent any
 
     environment {
+        TF_STATE_PATH = credentials('TFSTATE_PATH')
         TF_WORKDIR = './terraform'
     }
 
     stages {
-        stage('Terraform Init') {
-            steps {
-            dir("${TF_WORKDIR}") {
-                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
-                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
-                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform init'
-                }
-              }
-            }
-        }
         stage('Terraform Destroy') {
             steps {
                 dir("${TF_WORKDIR}") {
                     withCredentials([usernamePassword(credentialsId: 'aws-terraform',
                                                      usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                      passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh 'terraform destroy -auto-approve'
+                        sh "terraform destroy -auto-approve -state=${TF_STATE_PATH}"
                     }
                 }
             }
