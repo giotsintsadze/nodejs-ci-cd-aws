@@ -4,6 +4,7 @@ terraform {
   backend "s3" {
     bucket = "my-terraform-state-bucket-teeest"
     key    = "terraform.tfstate"
+    region = var.base_avaliable_zone
   }
 
   required_providers {
