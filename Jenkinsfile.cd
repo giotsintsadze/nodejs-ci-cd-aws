@@ -8,13 +8,20 @@ pipeline {
     stages {
         stage('Terraform Init') {
             steps {
-            dir("${TF_WORKDIR}") {
-                withCredentials([usernamePassword(credentialsId: 'aws-terraform',
-                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
-                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform init'
+                dir("${TF_WORKDIR}") {
+                    withCredentials([usernamePassword(credentialsId: 'aws-terraform',
+                                                     usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                     passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                          terraform init \
+                            -backend-config="bucket=my-terraform-state-bucket-teeest" \
+                            -backend-config="key=terraform.tfstate" \
+                            -backend-config="region=eu-central-1" \
+                            -reconfigure \
+                            -force-copy
+                        '''
+                    }
                 }
-              }
             }
         }
         stage('Terraform Plan') {
