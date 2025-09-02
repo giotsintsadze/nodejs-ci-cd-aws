@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        TF_STATE_PATH = credentials('TFSTATE_PATH')
         TF_WORKDIR = './terraform'
     }
 
@@ -13,7 +12,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'aws-terraform',
                                                      usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                      passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh "terraform destroy -auto-approve -state=${TF_STATE_PATH}"
+                        sh 'terraform destroy -auto-approve'
                     }
                 }
             }

@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        TF_STATE_PATH = credentials('TFSTATE_PATH')
         TF_WORKDIR = './terraform'
     }
 
@@ -13,7 +12,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'aws-terraform',
                                                 usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh "terraform init -backend-config='path=${TF_STATE_PATH}'"
+                    sh 'terraform init'
                 }
               }
             }
@@ -25,7 +24,7 @@ pipeline {
                                                 usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
 
-                    sh "terraform plan -out=tfplan -state=${TF_STATE_PATH}"
+                    sh 'terraform plan -out=tfplan'
                 }
               }
             }
@@ -36,7 +35,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'aws-terraform',
                                                      usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                      passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh "terraform apply -auto-approve -state=${TF_STATE_PATH} tfplan"
+                        sh 'terraform apply -auto-approve tfplan'
                     }
                 }
             }
